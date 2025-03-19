@@ -73,6 +73,8 @@ optional arguments:
   --validate            validate notebook output matches
   --kernel-spec KERNEL_SPEC
                         kernel spec to launch is not specified will use default
+  --kernel-execution-timeout 60
+                        the time limit (default 1min) to run each cell
   --output-filename OUTPUT_FILENAME
                         output filename for results of running notebook
 ```

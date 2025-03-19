@@ -22,6 +22,17 @@ def custom_exc(shell, etype, evalue, tb, tb_offset=None):
 get_ipython().set_custom_exc((Exception,), custom_exc)
 """
 
+KERNEL_EXCEPTION_SERVER_HEADER = """
+import sys
+def custom_exception_handler(shell, etype, evalue, tb, tb_offset=None):
+    import traceback
+    traceback.print_exception(etype, evalue, tb)
+    # exit(1)
+
+sys.excepthook=custom_exception_handler
+get_ipython().set_custom_exc((Exception,), custom_exception_handler)
+"""
+
 
 async def determine_username(
     hub,
@@ -86,6 +97,8 @@ async def execute_code(
             async with jupyter:
                 kernel_id, kernel = await jupyter.ensure_kernel(kernel_spec=kernel_spec)
                 async with kernel:
+                    await kernel.send_code(username, KERNEL_EXCEPTION_SERVER_HEADER, wait=True)
+
                     if daemonized and stop_server:
                         await kernel.send_code(
                             username,
