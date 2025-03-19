@@ -117,6 +117,12 @@ def create_run_subcommand(subparser):
         help="kernel spec to launch is not specified will use default",
     )
     subparser.add_argument(
+        "--kernel-execution-timeout",
+        type=int,
+        default=60,
+        help="kernel execution timeout for each cell, default 60",
+    )
+    subparser.add_argument(
         "--output-filename",
         type=str,
         help="output filename for results of running notebook",
@@ -155,8 +161,9 @@ def handle_run(args):
         "kernel_spec": args.kernel_spec,
         "auth_type": args.auth_type,
         "verify_ssl": not args.no_verify_ssl,
+        "kernel_execution_timeout": args.kernel_execution_timeout,
     }
-
+    
     if args.daemonize and args.temporary_user:
         logger.warning(
             "running notebook in daemonized mode will not delete temporary user"
