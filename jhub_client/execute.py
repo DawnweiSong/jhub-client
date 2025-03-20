@@ -25,7 +25,8 @@ get_ipython().set_custom_exc((Exception,), custom_exc)
 KERNEL_EXCEPTION_SERVER_HEADER = """
 import sys
 def custom_exception_handler(shell, etype, evalue, tb, tb_offset=None):
-    import traceback
+    import traceback, datetime
+    print(datetime.datetime.now())
     traceback.print_exception(etype, evalue, tb)
     # exit(1)
 
