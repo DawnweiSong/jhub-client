@@ -26,7 +26,7 @@ KERNEL_EXCEPTION_SERVER_HEADER = """
 import sys
 def custom_exception_handler(shell, etype, evalue, tb, tb_offset=None):
     import traceback, datetime
-    print(datetime.datetime.now())
+    print(f'Exception occured at {datetime.datetime.now()}: {evalue}\n'+'--'*16+'Details:'+'--'*16)
     traceback.print_exception(etype, evalue, tb)
     # exit(1)
 

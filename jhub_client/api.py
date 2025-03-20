@@ -328,6 +328,7 @@ class JupyterKernelAPI:
 
             msg = msg_text.json()
 
+            #TODO: Xiaowei 20250320, also print exceptions output from traceback.print_exception or stderr captured
             if "parent_header" in msg and msg["parent_header"].get("msg_id") == msg_id:
                 # These are responses to our request
                 if msg["channel"] == "iopub":
@@ -335,6 +336,8 @@ class JupyterKernelAPI:
                         return msg["content"]["data"]["text/plain"]
                     elif msg["msg_type"] == "stream":
                         return msg["content"]["text"]
+                    elif msg["msg_type"] == "error": #not sure if this will work, Xiaowei 20250320
+                        return f'{msg["content"]}'
                     # cell did not produce output
                     elif msg["content"].get("execution_state") == "idle":
                         return ""
