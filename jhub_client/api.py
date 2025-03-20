@@ -336,8 +336,8 @@ class JupyterKernelAPI:
                         return msg["content"]["data"]["text/plain"]
                     elif msg["msg_type"] == "stream":
                         return msg["content"]["text"]
-                    # elif msg["msg_type"] == "error": #not sure if this will work, Xiaowei 20250320
-                    #     return f'{msg["content"]}'
+                    elif msg["msg_type"] == "error": #not sure if this will work, Xiaowei 20250320
+                        return f'{msg["content"]}'
                     # cell did not produce output
                     elif msg["content"].get("execution_state") == "idle":
                         return ""
