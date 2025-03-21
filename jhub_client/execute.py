@@ -27,6 +27,7 @@ KERNEL_EXCEPTION_SERVER_HEADER = """
 def custom_exception_handler(shell, etype, evalue, tb, tb_offset=None):
     import traceback, datetime
     print(f'Exception occured at {datetime.datetime.now()}: {evalue}'+'--'*16+'Details:'+'--'*16)
+    shell.showtraceback((etype, evalue, tb), tb_offset=tb_offset) #https://stackoverflow.com/questions/40110540/jupyter-magic-to-handle-notebook-exceptions
     traceback.print_exception(etype, evalue, tb)
     # exit(1)
 
