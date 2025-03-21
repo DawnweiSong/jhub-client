@@ -27,8 +27,15 @@ KERNEL_EXCEPTION_SERVER_HEADER = """
 def custom_exception_handler(shell, etype, evalue, tb, tb_offset=None):
     import traceback, datetime
     print(f'Exception occured at {datetime.datetime.now()}: {evalue}'+'--'*16+'Details:'+'--'*16)
-    shell.showtraceback((etype, evalue, tb), tb_offset=tb_offset) #https://stackoverflow.com/questions/40110540/jupyter-magic-to-handle-notebook-exceptions
-    traceback.print_exception(etype, evalue, tb)
+    traceback.print_exception(etype, evalue, tb) #todo, catch the output from webSocket messages
+
+    from IPython.core.ultratb import AutoFormattedTB    
+    itb = AutoFormattedTB(mode = 'Plain', tb_offset = 1) # initialize the formatter for making the tracebacks into strings
+    shell.showtraceback((etype, evalue, tb), tb_offset=tb_offset) #https://stackoverflow.com/questions/40110540/jupyter-magic-to-handle-notebook-exceptions    
+    stb = itb.structured_traceback(etype, evalue, tb)# grab the traceback and make it into a list of strings
+    sstb = itb.stb2text(stb)
+    print(sstb)   
+    
     # exit(1)
 
 get_ipython().set_custom_exc((Exception,), custom_exception_handler)
