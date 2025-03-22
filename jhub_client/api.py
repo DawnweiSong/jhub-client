@@ -288,7 +288,7 @@ class JupyterKernelAPI:
     async def __aexit__(self, exc_type, exc, tb):
         await self.session.close()
 
-    def request_execute_code(self, msg_id, username, code):
+    def request_execute_code(self, msg_id, username, code, stop_on_error=True):
         return {
             "header": {
                 "msg_id": msg_id,
@@ -303,7 +303,7 @@ class JupyterKernelAPI:
                 "store_history": True,
                 "user_expressions": {},
                 "allow_stdin": True,
-                "stop_on_error": True,
+                "stop_on_error": stop_on_error,
             },
             "buffers": [],
             "parent_header": {},
@@ -321,13 +321,14 @@ class JupyterKernelAPI:
             return None
 
         async for msg_text in self.websocket:
-            if msg_text.type != aiohttp.WSMsgType.TEXT:
-                return False
+            if msg_text.type not in (aiohttp.WSMsgType.TEXT, aiohttp.WSMsgType.ERROR): #Xiaowei 20250322, include exception handling, https://jupyter-client.readthedocs.io/en/latest/messaging.html#messaging
+                return False             
 
             # TODO: timeout is ignored
+            # if msg_text.type==aiohttp.WSMsgType.ERROR:
+            #     return self.websocket.exception()
 
             msg = msg_text.json()
-
             #TODO: Xiaowei 20250320, also print exceptions output from traceback.print_exception or stderr captured
             if "parent_header" in msg and msg["parent_header"].get("msg_id") == msg_id:
                 # These are responses to our request
